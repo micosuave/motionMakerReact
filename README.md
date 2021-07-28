@@ -1,3 +1,8 @@
+# Motion Maker React
+
+This is a React implementation of my private Angular2 project called Motion Maker. It is sourced from the Ionic Confernece App template, as was the original. The original README is below.
+
+
 # Ionic React Conference Application
 
 

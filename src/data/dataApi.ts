@@ -2,16 +2,26 @@ import { Plugins } from '@capacitor/core';
 import { Schedule, Session } from '../models/Schedule';
 import { Speaker } from '../models/Speaker';
 import { Location } from '../models/Location';
+import { ICourt } from '../interfaces/ICourt';
 
 const { Storage } = Plugins;
 
 const dataUrl = '/assets/data/data.json';
 const locationsUrl = '/assets/data/locations.json';
 
+const courtsUrl = '/assets/data/courts.json';
+
 const HAS_LOGGED_IN = 'hasLoggedIn';
 const HAS_SEEN_TUTORIAL = 'hasSeenTutorial';
 const USERNAME = 'username';
 
+export const getCourtData = async () => {
+  const response  = await Promise.all([
+    fetch(courtsUrl),
+  ]);
+  const courtData = await response[0].json() as ICourt[];
+  return courtData
+}
 export const getConfData = async () => {
   const response = await Promise.all([
     fetch(dataUrl),

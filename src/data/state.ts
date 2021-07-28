@@ -20,7 +20,7 @@ export const initialState: AppState = {
     darkMode: false,
     isLoggedin: false,
     loading: false
-  }
+  },
 };
 
 export const reducers = combineReducers({

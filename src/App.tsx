@@ -23,7 +23,7 @@ import '@ionic/react/css/display.css';
 
 /* Theme variables */
 import './theme/variables.css';
-import MainTabs from './pages/MainTabs';
+import MainTabs from './pages/conference/MainTabs';
 import { connect } from './data/connect';
 import { AppContextProvider } from './data/AppContext';
 import { loadConfData } from './data/sessions/sessions.actions';
@@ -36,6 +36,8 @@ import Tutorial from './pages/Tutorial';
 import HomeOrTutorial from './components/HomeOrTutorial';
 import { Schedule } from "./models/Schedule";
 import RedirectToLogin from './components/RedirectToLogin';
+import AppsHome from './pages/AppsHome';
+import FederalTabs from './pages/federal/FederalTabs';
 
 const App: React.FC = () => {
   return (
@@ -80,7 +82,9 @@ const IonicApp: React.FC<IonicAppProps> = ({ darkMode, schedule, setIsLoggedIn, 
                 We use IonRoute here to keep the tabs state intact,
                 which makes transitions between tabs and non tab pages smooth
                 */}
-                <Route path="/tabs" render={() => <MainTabs />} />
+                <Route path="/federal" render={() => <FederalTabs />} />
+                <Route path="/conf" render={() => <MainTabs />} />
+                <Route path="/apps" component={AppsHome} />
                 <Route path="/account" component={Account} />
                 <Route path="/login" component={Login} />
                 <Route path="/signup" component={Signup} />
