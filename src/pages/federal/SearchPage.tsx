@@ -4,15 +4,32 @@ import { playSkipBackOutline, playSkipForwardOutline, searchOutline } from "ioni
 import { ICourt } from "../../interfaces/ICourt";
 import { IDocket } from "../../interfaces/IDocket";
 import { getCourtData } from '../../data/dataApi';
-export interface SearchPageProps { }
+import { connect } from '../../data/connect';
+import jwtdecode from 'jwt-decode';
+import axios from 'axios';
+import { ICLResp } from '../../interfaces/ICLResp';
+interface StateProps {
+  token?: string
+}
+export interface SearchPageProps extends StateProps {
 
-const SearchPage: React.FC<SearchPageProps> = () => {
+}
+
+const SearchPage: React.FC<SearchPageProps> = ({token}) => {
   const [ courts, setCourts ] = useState<ICourt[]>([]);
   const [ selectedCourt, setCourt ] = useState<ICourt>();
   const [ dnum, setDnum ] = useState<string>('');
   const [ searchResults, setSearchResults ] = useState<IDocket[]>([]);
+  const [ user, setUser ] = useState<any>({});
+  const [ next, setNext ] = useState<string | null>(null);
+  const [ prev, setPrev ] = useState<string | null>(null);
+  const [ count, setCount ] = useState<string | number | null>(null);
+  const axiosCL = axios.create({headers:{ Authorization: 'Bearer ' + token}})
 
-
+  useEffect(()=>{
+    const User = token ? jwtdecode(token) : {};
+    setUser(User);
+  }, [token])
   // Load Courts on INIT
   useEffect(()=>{
     getCourtData().then((courts)=> setCourts(courts));
@@ -21,6 +38,24 @@ const SearchPage: React.FC<SearchPageProps> = () => {
   useEffect(()=>{
     setCourt(courts[82])
   },[courts])
+  const searchCourts = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if(!dnum){
+      alert('docket number required')
+    }
+    if(dnum && selectedCourt){
+      axiosCL.get<ICLResp>(`/api/cl/search/${dnum}/court/${selectedCourt.id}`)
+        .then(resp =>{
+          setNext(resp.data.next)
+          setPrev(resp.data.previous)
+          setCount(resp.data.count)
+          setSearchResults(resp.data.results)
+        })
+        .catch(err => {
+          console.error(err)
+        })
+    }
+  }
   return (
     <>
     <IonHeader>
@@ -35,6 +70,7 @@ const SearchPage: React.FC<SearchPageProps> = () => {
       <IonCard>
         <IonCardContent>
           <IonGrid>
+             <form noValidate onSubmit={searchCourts}>
             <IonRow className="ion-align-items-center">
               <IonCol>
                 <IonItem>
@@ -65,31 +101,35 @@ const SearchPage: React.FC<SearchPageProps> = () => {
                 <IonGrid>
                   <IonRow>
                     <IonCol>
-                      <IonButton color="primary" expand="block" fill="outline">
+                      <IonButton color="primary" expand="block" fill="outline" type="submit">
                         <IonIcon slot="icon-only" icon={searchOutline}></IonIcon>
                       </IonButton>
                     </IonCol>
                   </IonRow>
                   <IonRow>
                     <IonCol>
-                      <IonButton color="danger" expand="block" fill="outline">
+                      {prev && <IonButton color="danger" expand="block" fill="outline">
                         <IonIcon slot="icon-only" icon={playSkipBackOutline}></IonIcon>
-                      </IonButton>
+                      </IonButton>}
                     </IonCol>
                     <IonCol>
-                      <IonButton color="success" expand="block" fill="outline">
+                      {next && <IonButton color="success" expand="block" fill="outline">
                         <IonIcon slot="icon-only" icon={playSkipForwardOutline}></IonIcon>
-                      </IonButton>
+                      </IonButton>}
                     </IonCol>
                   </IonRow>
                 </IonGrid>
               </IonCol>
             </IonRow>
+            </form>
             <IonRow className="ion-align-items-center">
               <IonCol push="5" className="ion-align-self-center">
+                { count}
                 {/* <IonSpinner name="dots"></IonSpinner> */}
-                <p>{selectedCourt && selectedCourt.full_name}</p>
-                <p>{dnum}</p>
+                {/* <p>{selectedCourt && selectedCourt.full_name}</p> */}
+                {/* <p>{dnum}</p> */}
+                <p>{token}</p>
+                <pre>{JSON.stringify(user, '\n', 2)}</pre>
               </IonCol>
             </IonRow>
             <IonRow>
@@ -117,4 +157,14 @@ const SearchPage: React.FC<SearchPageProps> = () => {
   )
 }
 
-export default SearchPage;
+// export default SearchPage;
+export default connect<StateProps>({
+  mapStateToProps: (state) => ({
+    token: state.user.token
+  }),
+  mapDispatchToProps: {
+
+  },
+  component: SearchPage
+})
+

@@ -14,6 +14,7 @@ const courtsUrl = '/assets/data/courts.json';
 const HAS_LOGGED_IN = 'hasLoggedIn';
 const HAS_SEEN_TUTORIAL = 'hasSeenTutorial';
 const USERNAME = 'username';
+const FIRETOKEN = 'fireToken'
 
 export const getCourtData = async () => {
   const response  = await Promise.all([
@@ -51,18 +52,27 @@ export const getUserData = async () => {
   const response = await Promise.all([
     Storage.get({ key: HAS_LOGGED_IN }),
     Storage.get({ key: HAS_SEEN_TUTORIAL }),
-    Storage.get({ key: USERNAME })]);
+    Storage.get({ key: USERNAME }),
+    Storage.get({ key: FIRETOKEN }),
+  ]);
+  const keys = await Storage.keys()
+  console.log(keys)
   const isLoggedin = await response[0].value === 'true';
   const hasSeenTutorial = await response[1].value === 'true';
   const username = await response[2].value || undefined;
+  const token = await response[3].value || undefined;
   const data = {
     isLoggedin,
     hasSeenTutorial,
-    username
+    username,
+    token
   }
   return data;
 }
-
+export const setLoggedInTokenData = async (token: string) => {
+  console.log(token);
+  await Storage.set({ key: FIRETOKEN, value: JSON.stringify(token) });
+}
 export const setIsLoggedInData = async (isLoggedIn: boolean) => {
   await Storage.set({ key: HAS_LOGGED_IN, value: JSON.stringify(isLoggedIn) });
 }

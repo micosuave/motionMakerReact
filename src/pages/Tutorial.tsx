@@ -23,14 +23,14 @@ const Tutorial: React.FC<TutorialProps> = ({ history, setHasSeenTutorial, setMen
   useIonViewWillEnter(() => {
     setMenuEnabled(false);
   });
-  
-  const startApp = async () => { 
+
+  const startApp = async () => {
     await setHasSeenTutorial(true);
     await setMenuEnabled(true);
-    history.push('/tabs/schedule', { direction: 'none' });
+    history.push('/apps', { direction: 'none' });
   };
 
-  const handleSlideChangeStart = () => { 
+  const handleSlideChangeStart = () => {
     slideRef.current!.isEnd().then(isEnd => setShowSkip(!isEnd));
   };
 
@@ -47,13 +47,14 @@ const Tutorial: React.FC<TutorialProps> = ({ history, setHasSeenTutorial, setMen
 
         <IonSlides ref={slideRef} onIonSlideWillChange={handleSlideChangeStart} pager={false}>
           <IonSlide>
-            <img src="assets/img/ica-slidebox-img-1.png" alt="" className="slide-image" />
+            <img src="assets/img/lll3.svg" alt="" className="slide-image" />
             <h2 className="slide-title">
-              Welcome to <b>ICA</b>
+              Welcome to <b>LexLab</b>
             </h2>
             <p>
-              The <b>ionic conference app</b> is a practical preview of the ionic framework in action, and a demonstration of proper code use.
+              Swipe, Drag, or
             </p>
+            <IonButton fill="clear" color="primary" onClick={()=> alert('ack!')}></IonButton>
           </IonSlide>
 
           <IonSlide>

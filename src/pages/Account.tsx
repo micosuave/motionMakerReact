@@ -9,6 +9,7 @@ interface OwnProps extends RouteComponentProps { }
 
 interface StateProps {
   username?: string;
+  token?: string
 }
 
 interface DispatchProps {
@@ -17,7 +18,7 @@ interface DispatchProps {
 
 interface AccountProps extends OwnProps, StateProps, DispatchProps { }
 
-const Account: React.FC<AccountProps> = ({ setUsername, username }) => {
+const Account: React.FC<AccountProps> = ({ setUsername, username, token }) => {
 
   const [showAlert, setShowAlert] = useState(false);
 
@@ -40,6 +41,7 @@ const Account: React.FC<AccountProps> = ({ setUsername, username }) => {
           (<div className="ion-padding-top ion-text-center">
             <img src="https://www.gravatar.com/avatar?d=mm&s=140" alt="avatar" />
             <h2>{ username }</h2>
+            <h3>Token: {token}</h3>
             <IonList inset>
               <IonItem onClick={() => clicked('Update Picture')}>Update Picture</IonItem>
               <IonItem onClick={() => setShowAlert(true)}>Change Username</IonItem>
@@ -78,7 +80,8 @@ const Account: React.FC<AccountProps> = ({ setUsername, username }) => {
 
 export default connect<OwnProps, StateProps, DispatchProps>({
   mapStateToProps: (state) => ({
-    username: state.user.username
+    username: state.user.username,
+    token: state.user.token
   }),
   mapDispatchToProps: {
     setUsername,
