@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import { IonHeader, IonToolbar, IonTitle, IonContent, IonPage, IonButtons, IonMenuButton, IonRow, IonCol, IonButton, IonList, IonItem, IonLabel, IonInput, IonText } from '@ionic/react';
 import './Login.scss';
 import { setIsLoggedIn, setUsername, setLoggedInToken } from '../data/user/user.actions';
+import { setTokenAction, setAuthenticatedAction, setUserAction} from '../data/redux/actions/userActions';
 import { connect } from '../data/connect';
 import { RouteComponentProps } from 'react-router';
 import axios from 'axios';
+import jwtDecode from 'jwt-decode';
 
 interface OwnProps extends RouteComponentProps {}
 
@@ -40,6 +42,10 @@ const Login: React.FC<LoginProps> = ({setIsLoggedIn, history, setUsername: setUs
         .then(async (resp)=>{
           console.log(resp.data.token)
           localStorage.setItem('_cap_fireToken', resp.data.token)
+          await setTokenAction({payload: resp.data.token})
+          await setAuthenticatedAction({payload:true})
+          await setUserAction({payload: jwtDecode(resp.data.token)})
+
           await setLoggedInToken(resp.data.token)
           await setIsLoggedIn(true);
           await setUsernameAction(username);

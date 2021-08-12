@@ -69,9 +69,14 @@ export const getUserData = async () => {
   }
   return data;
 }
-export const setLoggedInTokenData = async (token: string) => {
+export const setLoggedInTokenData = async (token?: string) => {
   console.log(token);
-  await Storage.set({ key: FIRETOKEN, value: JSON.stringify(token) });
+  if(!token){
+    await Storage.remove({ key: FIRETOKEN });
+  } else{
+    await Storage.set({ key: FIRETOKEN, value: token });
+
+  }
 }
 export const setIsLoggedInData = async (isLoggedIn: boolean) => {
   await Storage.set({ key: HAS_LOGGED_IN, value: JSON.stringify(isLoggedIn) });

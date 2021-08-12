@@ -6,7 +6,7 @@ import { IDocket } from "../../interfaces/IDocket";
 import { getCourtData } from '../../data/dataApi';
 import { connect } from '../../data/connect';
 import jwtdecode from 'jwt-decode';
-import axios from 'axios';
+import axios, { AxiosRequestConfig } from 'axios';
 import { ICLResp } from '../../interfaces/ICLResp';
 interface StateProps {
   token?: string
@@ -56,6 +56,32 @@ const SearchPage: React.FC<SearchPageProps> = ({token}) => {
         })
     }
   }
+  const getNext = async () => {
+    let config: AxiosRequestConfig = { params: { url : next}};
+    axiosCL.get<ICLResp>('/api/cl/proxy/', config)
+    .then(resp =>{
+          setNext(resp.data.next)
+          setPrev(resp.data.previous)
+          setCount(resp.data.count)
+          setSearchResults(resp.data.results)
+        })
+        .catch(err => {
+          console.error(err)
+        })
+  }
+  const getPrev = async () => {
+    let config: AxiosRequestConfig = { params: { url : prev}};
+    axiosCL.get<ICLResp>('/api/cl/proxy/', config)
+    .then(resp =>{
+          setNext(resp.data.next)
+          setPrev(resp.data.previous)
+          setCount(resp.data.count)
+          setSearchResults(resp.data.results)
+        })
+        .catch(err => {
+          console.error(err)
+        })
+  }
   return (
     <>
     <IonHeader>
@@ -72,7 +98,7 @@ const SearchPage: React.FC<SearchPageProps> = ({token}) => {
           <IonGrid>
              <form noValidate onSubmit={searchCourts}>
             <IonRow className="ion-align-items-center">
-              <IonCol>
+              <IonCol size="7">
                 <IonItem>
                   <IonItem>
                     <IonLabel position="stacked">Court</IonLabel>
@@ -91,13 +117,13 @@ const SearchPage: React.FC<SearchPageProps> = ({token}) => {
                   </IonItem>
                 </IonItem>
               </IonCol>
-              <IonCol>
+              <IonCol size="3">
                 <IonItem>
                   <IonLabel position="floating">Docket Number</IonLabel>
                   <IonInput type="text" id="dnum" value={dnum} onIonChange={(e) => setDnum(e.detail.value ? e.detail.value.trim() : '')}></IonInput>
                 </IonItem>
               </IonCol>
-              <IonCol>
+              <IonCol size="2">
                 <IonGrid>
                   <IonRow>
                     <IonCol>
@@ -108,12 +134,12 @@ const SearchPage: React.FC<SearchPageProps> = ({token}) => {
                   </IonRow>
                   <IonRow>
                     <IonCol>
-                      {prev && <IonButton color="danger" expand="block" fill="outline">
+                      {prev && <IonButton color="danger" expand="block" fill="outline" onClick={() => getPrev()}>
                         <IonIcon slot="icon-only" icon={playSkipBackOutline}></IonIcon>
                       </IonButton>}
                     </IonCol>
                     <IonCol>
-                      {next && <IonButton color="success" expand="block" fill="outline">
+                      {next && <IonButton color="success" expand="block" fill="outline" onClick={() => getNext()}>
                         <IonIcon slot="icon-only" icon={playSkipForwardOutline}></IonIcon>
                       </IonButton>}
                     </IonCol>
@@ -128,8 +154,8 @@ const SearchPage: React.FC<SearchPageProps> = ({token}) => {
                 {/* <IonSpinner name="dots"></IonSpinner> */}
                 {/* <p>{selectedCourt && selectedCourt.full_name}</p> */}
                 {/* <p>{dnum}</p> */}
-                <p>{token}</p>
-                <pre>{JSON.stringify(user, '\n', 2)}</pre>
+                {/* <p>{token}</p> */}
+                {/* <pre>{JSON.stringify(user, '\n', 2)}</pre> */}
               </IonCol>
             </IonRow>
             <IonRow>

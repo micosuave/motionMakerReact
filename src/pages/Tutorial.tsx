@@ -47,7 +47,7 @@ const Tutorial: React.FC<TutorialProps> = ({ history, setHasSeenTutorial, setMen
 
         <IonSlides ref={slideRef} onIonSlideWillChange={handleSlideChangeStart} pager={false}>
           <IonSlide>
-            <img src="assets/img/lll3.svg" alt="" className="slide-image" />
+            <img src="assets/lll3.svg" alt="" className="slide-image" />
             <h2 className="slide-title">
               Welcome to <b>LexLab</b>
             </h2>

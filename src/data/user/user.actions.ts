@@ -32,10 +32,10 @@ export const setIsLoggedIn = (loggedIn: boolean) => async (dispatch: React.Dispa
     loggedIn
   } as const)
 };
-export const setLoggedInToken = (token: string) => async (dispatch: React.Dispatch<any>)=> {
+export const setLoggedInToken = (token?: string) => async (dispatch: React.Dispatch<any>)=> {
   console.log(token);
   await setLoggedInTokenData(token);
-  return ({ type: 'set-user-token', token} as const)
+  return ({ type: 'set-user-token', token} as const);
 };
 export const setUsername = (username?: string) => async (dispatch: React.Dispatch<any>) => {
   await setUsernameData(username);
